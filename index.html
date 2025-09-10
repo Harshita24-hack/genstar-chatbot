@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Genstar Helpdesk Chatbot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #d7e1ec, #f0f4f7);
+            display: flex;
+            justify-content: center;
+            padding: 50px;
+            margin: 0;
+        }
+        
+        #chatbox {
+            width: 380px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        #chatbox h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        #messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        
+        .user,
+        .bot {
+            margin: 6px 0;
+            padding: 8px 10px;
+            border-radius: 8px;
+            max-width: 80%;
+            display: inline-block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        .user {
+            background: #d1e7ff;
+            color: #004085;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .bot {
+            background: #d4edda;
+            color: #155724;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 6px;
+        }
+        
+        textarea {
+            flex: 1;
+            min-height: 40px;
+            max-height: 100px;
+            resize: none;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .clear-btn {
+            margin-top: 6px;
+            background: #dc3545;
+        }
+        
+        .clear-btn:hover {
+            background: #a71d2a;
+        }
+        
+        .time {
+            font-size: 10px;
+            color: #555;
+            margin-top: 2px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="chatbox">
+        <h2>Genstar Helpdesk Chatbot</h2>
+        <div id="messages"></div>
+        <div class="input-area">
+            <textarea id="userInput" placeholder="Type your question..."></textarea>
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        <button class="clear-btn" onclick="clearChat()">Clear Chat</button>
+    </div>
+
+    <script>
+        // Store FAQs as an array for unique structure
+        const faqList = [{
+            q: ["hi", "hello"],
+            a: "Hey there! How can I help you today?"
+        }, {
+            q: ["admission", "admission info"],
+            a: "For admission queries, please call our Admission Cell at 7908234517."
+        }, {
+            q: ["campus", "college campus"],
+            a: "Our campus is spread over 9 acres with lush greenery."
+        }, {
+            q: ["placement", "job"],
+            a: "Our college has a 98% placement record!"
+        }, {
+            q: ["timings", "college time"],
+            a: "College hours: 9 AM to 5 PM, Monday–Friday."
+        }, {
+            q: ["leave", "leave application"],
+            a: "Apply for leave on the student portal under 'Leave Application'."
+        }, {
+            q: ["courses", "departments"],
+            a: "We offer CSE, ECE, ME, Civil, and AI-ML courses."
+        }, {
+            q: ["contact", "email"],
+            a: "Email us at admin@college.com."
+        }, {
+            q: ["bye", "goodbye"],
+            a: "Goodbye! Have a great day!"
+        }];
+
+        function getTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function sendMessage() {
+            let input = document.getElementById("userInput");
+            let userText = input.value.trim();
+            if (!userText) return;
+
+            addMessage("You: " + userText, "user");
+
+            let reply = "I'm sorry, I don't have info on that yet.";
+            for (let item of faqList) {
+                if (item.q.some(keyword => userText.toLowerCase().includes(keyword))) {
+                    reply = item.a;
+                    break;
+                }
+            }
+            setTimeout(() => addMessage("Bot: " + reply, "bot"), 300);
+
+            input.value = "";
+            input.style.height = "40px"; // reset height
+        }
+
+        function addMessage(text, type) {
+            let messages = document.getElementById("messages");
+            let div = document.createElement("div");
+            div.className = type;
+            div.innerHTML = text + `<span class='time'>${getTime()}</span>`;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function clearChat() {
+            document.getElementById("messages").innerHTML = "";
+        }
+
+        // Auto-expand textarea
+        document.getElementById("userInput").addEventListener("input", function() {
+            this.style.height = "40px";
+            this.style.height = (this.scrollHeight) + "px";
+        });
+
+        document.getElementById("userInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+
+</html>

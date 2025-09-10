@@ -39,9 +39,4 @@ This project is deployed and accessible at:
 - Connect to a backend database for live FAQs.
 - User authentication for personalized help.
 
-## License
-This project is open source and free to use.
 
----
-
-*Good luck with your hackathon!*
